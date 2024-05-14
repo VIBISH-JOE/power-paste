@@ -6,12 +6,10 @@ from pynput import keyboard
 def on_press_power_paste():
     remove_indent = True
     dont_close_brackets = True
-
     string  = pyperclip.paste()
     try:
         if remove_indent:
             string = '\n'.join(list(map(str.strip, string.split('\n'))))
-        
         if dont_close_brackets:
             singe_string_count = 0
             double_string_count = 0
@@ -27,8 +25,6 @@ def on_press_power_paste():
                     brackets['flower'] += 1
                 elif i=='[':
                     brackets['square'] += 1
-                elif i=='<':
-                    brackets['angular'] += 1
 
                 if (i in ['"', "'"]):
                     if i in '"':
@@ -42,17 +38,18 @@ def on_press_power_paste():
                         else:
                             pyautogui.press('right')
 
-                elif i in [')', '}', ']', '>']:
+                elif i in [')', '}', ']']:
                     if brackets['normal'] > 0 and i == ')':
                         brackets['normal'] -= 1
                     elif brackets['flower'] > 0 and i == '}':
                         brackets['flower'] -= 1
+                        pyautogui.press('down')
                     elif brackets['square'] > 0 and i == ']':
                         brackets['square'] -= 1
-                    elif brackets['angular'] > 0 and i == '>':
-                        brackets['angular'] -= 1
                     else:
                         pyautogui.typewrite(i)
+                    if brackets['flower']>1 and i=='}':
+                        pyautogui.press('left')
                     pyautogui.press('right')
                 else:
                     pyautogui.typewrite(i)
@@ -61,9 +58,6 @@ def on_press_power_paste():
         print("Successfully Power Pasted")
     except pyautogui.FailSafeException as e:
         print("Stopped Power Pasting |", e)
-
-
-
 
 def on_press(key):
     try:
